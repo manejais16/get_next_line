@@ -1,6 +1,6 @@
 #include "get_next_line.h"
 int	str_len(char *str);
-static int	free_memory(char *buffer, char *current_read);
+static int	free_memory(char **buffer, char *current_read);
 
 int	add_to_buffer(char **buffer, char *current_read, int bytes_read)
 {
@@ -11,7 +11,7 @@ int	add_to_buffer(char **buffer, char *current_read, int bytes_read)
 	len_counter = 0;
 	result = (char *) malloc(str_len(*buffer) + bytes_read + NULL_CHAR_LEN);
 	if (!result)
-		return (free_memory(*buffer, current_read));
+		return (free_memory(buffer, current_read));
 	while (*(*buffer + len_counter))
 	{
 		*(result + len_counter) = *(*buffer + len_counter);
@@ -44,9 +44,10 @@ int	str_len(char *str)
 	return (len);
 }
 
-static int	free_memory(char *buffer, char *current_read)
+static int	free_memory(char **buffer, char *current_read)
 {
 	free(buffer);
 	free(current_read);
+	buffer = 0;
 	return (-1);
 }

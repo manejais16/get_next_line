@@ -4,6 +4,8 @@
 // free
 // malloc
 // read
+//For test!
+static int	last;
 
 static char	*check_for_newline(char *buffer);
 static char	*get_line(char **buffer,char *new_line_start);
@@ -38,14 +40,16 @@ char	*get_next_line(int fd)
 		bytes_read = read(fd, current_read, BUFFER_SIZE);
 		if (bytes_read == -1)
 		{
-			free(buffer);
 			free(current_read);
+			free(buffer);
+			buffer = 0;
 			return (0);
 		}
 		else if (bytes_read == 0 && *buffer == '\0')
 		{
 			free(buffer);
 			free(current_read);
+			buffer = 0;
 			return (0);
 		}
 		if (add_to_buffer(&buffer, current_read, bytes_read) == -1)
@@ -53,6 +57,7 @@ char	*get_next_line(int fd)
 		if (!check_for_newline(buffer) && bytes_read < BUFFER_SIZE)
 		{
 			free(current_read);
+			//Change it!!!
 			return (get_line(&buffer, new_line_start));
 		}
 	}
@@ -77,7 +82,20 @@ static char	*get_line(char **buffer,char *new_line_start)
 	char	*result;
 	
 	if (!new_line_start)
-		return(*buffer);
+	{
+		//test
+		if (!last)
+		{
+			last++;
+			return (*buffer);
+		}
+		else
+		{
+			free(*buffer);
+			return (0);
+		}
+		//Add code here!!
+	}
 	result = (char *)malloc(new_line_start - *buffer + NULL_CHAR_LEN);
 	if (!result)
 	{
