@@ -31,16 +31,30 @@ char	*get_next_line(int fd)
 	{
 		new_line_start = check_for_newline(buffer);
 		if (new_line_start)
+		{
+			free(current_read);
 			return (get_line(&buffer, new_line_start));
+		}
 		bytes_read = read(fd, current_read, BUFFER_SIZE);
 		if (bytes_read == -1)
+		{
+			free(buffer);
+			free(current_read);
 			return (0);
+		}
 		else if (bytes_read == 0 && *buffer == '\0')
+		{
+			free(buffer);
+			free(current_read);
 			return (0);
+		}
 		if (add_to_buffer(&buffer, current_read, bytes_read) == -1)
 			return (0);
 		if (!check_for_newline(buffer) && bytes_read < BUFFER_SIZE)
+		{
+			free(current_read);
 			return (get_line(&buffer, new_line_start));
+		}
 	}
 }
 

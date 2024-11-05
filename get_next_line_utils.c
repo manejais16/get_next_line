@@ -25,7 +25,8 @@ int	add_to_buffer(char **buffer, char *current_read, int bytes_read)
 		iter++;
 	}
 	*(result + len_counter) = '\0';
-	free_memory(*buffer, current_read);
+	//free_memory(*buffer, current_read);
+	free(*buffer);
 	*buffer = result;
 	return (iter);
 }
