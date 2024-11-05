@@ -1,19 +1,20 @@
-static int	str_len(char *str);
+#include "get_next_line.h"
+int	str_len(char *str);
 static int	free_memory(char *buffer, char *current_read);
 
-int	add_to_buffer(char *buffer, char *current_read, int bytes_read)
+int	add_to_buffer(char **buffer, char *current_read, int bytes_read)
 {
 	char	*result;
 	int		len_counter;
 	int		iter;
 
 	len_counter = 0;
-	*result = (char *) malloc(str_len(buffer) + bytes_read + NULL_CHAR_LEN);
+	result = (char *) malloc(str_len(*buffer) + bytes_read + NULL_CHAR_LEN);
 	if (!result)
-		return (free_memory(buffer, current_read));
-	while (*buffer)
+		return (free_memory(*buffer, current_read));
+	while (*(*buffer + len_counter))
 	{
-		*(result + len_counter) = *(buffer + len_counter);
+		*(result + len_counter) = *(*buffer + len_counter);
 		len_counter++;
 	}
 	iter = 0;
@@ -24,17 +25,21 @@ int	add_to_buffer(char *buffer, char *current_read, int bytes_read)
 		iter++;
 	}
 	*(result + len_counter) = '\0';
-	buffer = result;
-	free_memory(result, current_read);
+	free_memory(*buffer, current_read);
+	*buffer = result;
 	return (iter);
 }
 
-static int	str_len(char *str)
+int	str_len(char *str)
 {
 	int	len;
 
+	len = 0;
 	while (*str)
+	{
 		len++;
+		str++;
+	}
 	return (len);
 }
 
