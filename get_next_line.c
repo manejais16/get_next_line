@@ -5,7 +5,7 @@
 // malloc
 // read
 //For test!
-static int	last;
+static int	last = 0;
 
 static char	*check_for_newline(char *buffer);
 static char	*get_line(char **buffer,char *new_line_start);
@@ -19,14 +19,31 @@ char	*get_next_line(int fd)
 	int			bytes_read;
 	char		*new_line_start;
 
+	if (last)
+	{
+		if (buffer)
+			free(buffer);
+		buffer = 0;
+		return (0);
+	}
 	current_read = (char *)malloc(BUFFER_SIZE);
 	if (!current_read)
+	{
+		if (buffer)
+			free(buffer);
+		buffer = 0;
 		return (0);
+	}
 	if (!buffer)
 	{
 		buffer = (char *)malloc(1);
 		if (!buffer)
+		{
+			if (current_read)
+				free(current_read);
+			current_read = 0;
 			return (0);
+		}
 		*buffer = '\0';
 	}
 	while (1)
@@ -34,21 +51,29 @@ char	*get_next_line(int fd)
 		new_line_start = check_for_newline(buffer);
 		if (new_line_start)
 		{
-			free(current_read);
+			if (current_read)
+				free(current_read);
+			current_read = 0;
 			return (get_line(&buffer, new_line_start));
 		}
 		bytes_read = read(fd, current_read, BUFFER_SIZE);
 		if (bytes_read == -1)
 		{
-			free(current_read);
-			free(buffer);
+			if (current_read)
+				free(current_read);
+			if (buffer)
+				free(buffer);
 			buffer = 0;
+			current_read = 0;
 			return (0);
 		}
 		else if (bytes_read == 0 && *buffer == '\0')
 		{
-			free(buffer);
-			free(current_read);
+			if (current_read)
+				free(current_read);
+			if (buffer)
+				free(buffer);
+			current_read = 0;
 			buffer = 0;
 			return (0);
 		}
@@ -56,8 +81,8 @@ char	*get_next_line(int fd)
 			return (0);
 		if (!check_for_newline(buffer) && bytes_read < BUFFER_SIZE)
 		{
-			free(current_read);
-			//Change it!!!
+			if (current_read)
+				free(current_read);
 			return (get_line(&buffer, new_line_start));
 		}
 	}
@@ -65,6 +90,9 @@ char	*get_next_line(int fd)
 
 static char	*check_for_newline(char *buffer)
 {
+	//Test
+	if (!buffer)
+		return (0);
 	while (*buffer)
 	{
 		if (*buffer == '\n')
@@ -89,24 +117,22 @@ static char	*get_line(char **buffer,char *new_line_start)
 			last++;
 			return (*buffer);
 		}
-		else
-		{
-			free(*buffer);
-			return (0);
-		}
-		//Add code here!!
 	}
 	result = (char *)malloc(new_line_start - *buffer + NULL_CHAR_LEN);
 	if (!result)
 	{
+		if (*buffer)
 		free (*buffer);
+		*buffer = 0;
 		return (0);
 	}
 	ft_strlcpy(result, *buffer, \
 			new_line_start - *buffer + NULL_CHAR_LEN);
 	if (!truncate_buffer(buffer, new_line_start))
 	{
+		if (*buffer)
 		free (*buffer);
+		*buffer = 0;
 		return (0);
 	}
 	return (result);
@@ -122,6 +148,7 @@ static int	truncate_buffer(char **buffer, char *new_line_start)
 	if (!result)
 		return (0);
 	ft_strlcpy(result, new_line_start, len + NULL_CHAR_LEN);
+
 	free(*buffer);
 	*buffer = result;
 	return (1);
