@@ -6,7 +6,7 @@
 /*   By: kzarins <kzarins@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 05:24:51 by kzarins           #+#    #+#             */
-/*   Updated: 2024/11/07 05:46:30 by kzarins          ###   ########.fr       */
+/*   Updated: 2024/11/07 23:21:04 by kzarins          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*get_next_line(int fd);
 int		add_to_buffer(char **buffer, char *current_read, int bytes_read);
 int		str_len(char *str);
 void	ft_strlcpy(char *result, char *buffer, int len);
-char	*free_buffer(char **buffer);
+char	*free_buffer(char **buffer, char **buffer2);
 char	*check_for_newline(char *buffer);
 
 # ifndef BUFFER_SIZE

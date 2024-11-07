@@ -6,7 +6,7 @@
 /*   By: kzarins <kzarins@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 05:47:41 by kzarins           #+#    #+#             */
-/*   Updated: 2024/11/07 05:47:44 by kzarins          ###   ########.fr       */
+/*   Updated: 2024/11/07 23:20:43 by kzarins          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int		add_to_buffer(char **buffer, char *current_read, int bytes_read);
 int		str_len(char *str);
 void	ft_strlcpy(char *result, char *buffer, int len);
-char	*free_buffer(char **buffer);
+char	*free_buffer(char **buffer, char **buffer2);
 char	*check_for_newline(char *buffer);
 
 //If theres are no read bytes the buffer does not get changed
@@ -74,11 +74,17 @@ void	ft_strlcpy(char *result, char *buffer, int len)
 	return ;
 }
 
-char	*free_buffer(char **buffer)
+char	*free_buffer(char **buffer, char **buffer2)
 {
 	if (*buffer)
 		free (*buffer);
 	*buffer = 0;
+	if (buffer2)
+	{
+		if (*buffer2)
+			free (*buffer2);
+		*buffer2 = 0;
+	}
 	return (0);
 }
 
