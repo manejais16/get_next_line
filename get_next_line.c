@@ -1,11 +1,9 @@
 #include "get_next_line.h"
 
 //Free the buffer and set buffer pointer to 0
-static char	*free_buffer(char **buffer);
 static char	*check_for_newline(char *buffer);
 static char	*get_line(char **buffer, char *new_line_start);
 static int	truncate_buffer(char **buffer, char *new_line_start);
-static void	ft_strlcpy(char *result, char *buffer, int len);
 
 char	*get_next_line(int fd)
 {
@@ -53,24 +51,6 @@ char	*get_next_line(int fd)
 	}
 }
 
-static char	*free_buffer(char **buffer)
-{
-	if (*buffer)
-		free (*buffer);
-	*buffer = 0;
-	return (0);
-}
-
-static char	*check_for_newline(char *buffer)
-{
-	while (*buffer)
-	{
-		if (*buffer == '\n')
-			return (++buffer);
-		buffer++;
-	}
-	return (0);
-}
 
 //Special case if there is no \n in the buffer
 //The buffer still has to be free!!
@@ -115,16 +95,4 @@ static int	truncate_buffer(char **buffer, char *new_line_start)
 	free_buffer(buffer);
 	*buffer = result;
 	return (1);
-}
-
-static void	ft_strlcpy(char *result, char *buffer, int len)
-{
-	*(result + len) = '\0';
-	len--;
-	while (len >= 0)
-	{
-		*(result + len) = *(buffer + len);
-		len--;
-	}
-	return ;
 }

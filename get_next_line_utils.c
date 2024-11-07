@@ -1,6 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kzarins <kzarins@student.42heilbronn.de>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/07 05:47:41 by kzarins           #+#    #+#             */
+/*   Updated: 2024/11/07 05:47:44 by kzarins          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-int	str_len(char *str);
+int		add_to_buffer(char **buffer, char *current_read, int bytes_read);
+int		str_len(char *str);
+void	ft_strlcpy(char *result, char *buffer, int len);
+char	*free_buffer(char **buffer);
+char	*check_for_newline(char *buffer);
 
 //If theres are no read bytes the buffer does not get changed
 //In that case the function returns -1
@@ -44,4 +60,35 @@ int	str_len(char *str)
 		str++;
 	}
 	return (len);
+}
+
+void	ft_strlcpy(char *result, char *buffer, int len)
+{
+	*(result + len) = '\0';
+	len--;
+	while (len >= 0)
+	{
+		*(result + len) = *(buffer + len);
+		len--;
+	}
+	return ;
+}
+
+char	*free_buffer(char **buffer)
+{
+	if (*buffer)
+		free (*buffer);
+	*buffer = 0;
+	return (0);
+}
+
+char	*check_for_newline(char *buffer)
+{
+	while (*buffer)
+	{
+		if (*buffer == '\n')
+			return (++buffer);
+		buffer++;
+	}
+	return (0);
 }
