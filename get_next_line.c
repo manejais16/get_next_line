@@ -34,7 +34,10 @@ char	*get_next_line(int fd)
 		if (new_line_start)
 		{
 			free_current_read(&current_read);
-			return (get_line(&buffer, new_line_start));
+			current_read = get_line(&buffer, new_line_start);
+			if (!current_read)
+				free_buffer(&buffer);
+			return (current_read);
 		}
 		bytes_read = read(fd, current_read, BUFFER_SIZE);
 		if (bytes_read == -1 || (bytes_read == 0 && *buffer == '\0') || \
@@ -99,12 +102,17 @@ static char *get_line(char **buffer, char *new_line_start)
 	}
 	result = (char *)malloc(new_line_start - *buffer + NULL_CHAR_LEN);
 	if (!result)
-		return(free_buffer(buffer));
+	{
+		return(0);
+	}
 	ft_strlcpy(result, *buffer, \
 			new_line_start - *buffer);
 	//The buffer has to still be free!!
 	if (!truncate_buffer(buffer, new_line_start))
+	{
+		free(result);
 		return (0);
+	}
 	return (result);
 }
 
