@@ -1,5 +1,6 @@
 #include "get_next_line.h"
-int	str_len(char *str); //Tested
+
+int	str_len(char *str);
 
 //If theres are no read bytes the buffer does not get changed
 //In that case the function returns -1
@@ -21,11 +22,10 @@ int	add_to_buffer(char **buffer, char *current_read, int bytes_read)
 		len_counter++;
 	}
 	iter = 0;
-	while (iter < bytes_read)
+	while (iter++ < bytes_read)
 	{
-		*(result + len_counter) = *(current_read + iter);
+		*(result + len_counter) = *(current_read + iter - 1);
 		len_counter++;
-		iter++;
 	}
 	*(result + len_counter) = '\0';
 	free(*buffer);

@@ -1,14 +1,11 @@
 #include "get_next_line.h"
 
 //Free the buffer and set buffer pointer to 0
-static char *free_buffer(char **buffer);							//Tested
-static char *free_current_read(char **current_read);				//Tested
-static char *check_for_newline(char *buffer);						//tested
-//Don't call this function if there are not bytes read!!!
-//This function truncates the buffer!!!!
-static char *get_line(char **buffer, char *new_line_start);			//tested
-static int	truncate_buffer(char **buffer, char *new_line_start); 	//Tested
-static void	ft_strlcpy(char *result, char *buffer, int len); 		//Tested
+static char	*free_buffer(char **buffer);
+static char	*check_for_newline(char *buffer);
+static char	*get_line(char **buffer, char *new_line_start);
+static int	truncate_buffer(char **buffer, char *new_line_start);
+static void	ft_strlcpy(char *result, char *buffer, int len);
 
 char	*get_next_line(int fd)
 {
@@ -24,16 +21,15 @@ char	*get_next_line(int fd)
 			return (0);
 		*buffer = '\0';
 	}
-
 	current_read = (char *)malloc(BUFFER_SIZE);
 	if (!current_read)
-		return(free_buffer(&buffer));
+		return (free_buffer(&buffer));
 	while (1)
 	{
 		new_line_start = check_for_newline(buffer);
 		if (new_line_start)
 		{
-			free_current_read(&current_read);
+			free_buffer(&current_read);
 			current_read = get_line(&buffer, new_line_start);
 			if (!current_read)
 				free_buffer(&buffer);
@@ -44,7 +40,7 @@ char	*get_next_line(int fd)
 				!add_to_buffer(&buffer, current_read, bytes_read))
 		{
 			free_buffer(&buffer);
-			free_current_read(&current_read);
+			free_buffer(&current_read);
 			return (0);
 		}
 		if (!check_for_newline(buffer) && bytes_read < BUFFER_SIZE)
@@ -53,12 +49,11 @@ char	*get_next_line(int fd)
 			current_read = get_line(&buffer, new_line_start);
 			free_buffer(&buffer);
 			return (current_read);
-		}	
+		}
 	}
 }
 
-
-static char *free_buffer(char **buffer)
+static char	*free_buffer(char **buffer)
 {
 	if (*buffer)
 		free (*buffer);
@@ -66,15 +61,7 @@ static char *free_buffer(char **buffer)
 	return (0);
 }
 
-static char *free_current_read(char **current_read)
-{
-	if (*current_read)
-		free (*current_read);
-	*current_read = 0;
-	return (0);
-}
-
-static char *check_for_newline(char *buffer)
+static char	*check_for_newline(char *buffer)
 {
 	while (*buffer)
 	{
@@ -85,13 +72,13 @@ static char *check_for_newline(char *buffer)
 	return (0);
 }
 
-static char *get_line(char **buffer, char *new_line_start)
+//Special case if there is no \n in the buffer
+//The buffer still has to be free!!
+//returns 0 if malloc failes
+static char	*get_line(char **buffer, char *new_line_start)
 {
 	char	*result;
 
-	//Special case if there is no \n in the buffer
-	// The buffer still has to be free!!
-	// returns 0 if malloc failes
 	if (!new_line_start)
 	{
 		result = (char *)malloc(str_len(*buffer) + NULL_CHAR_LEN);
@@ -103,11 +90,10 @@ static char *get_line(char **buffer, char *new_line_start)
 	result = (char *)malloc(new_line_start - *buffer + NULL_CHAR_LEN);
 	if (!result)
 	{
-		return(0);
+		return (0);
 	}
 	ft_strlcpy(result, *buffer, \
 			new_line_start - *buffer);
-	//The buffer has to still be free!!
 	if (!truncate_buffer(buffer, new_line_start))
 	{
 		free(result);
@@ -125,7 +111,7 @@ static int	truncate_buffer(char **buffer, char *new_line_start)
 	result = (char *)malloc(len + NULL_CHAR_LEN);
 	if (!result)
 		return (0);
-	ft_strlcpy(result, new_line_start , len);
+	ft_strlcpy(result, new_line_start, len);
 	free_buffer(buffer);
 	*buffer = result;
 	return (1);
