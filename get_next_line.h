@@ -6,15 +6,13 @@
 /*   By: kzarins <kzarins@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 05:24:51 by kzarins           #+#    #+#             */
-/*   Updated: 2024/11/07 23:21:04 by kzarins          ###   ########.fr       */
+/*   Updated: 2024/11/08 01:01:20 by kzarins          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # include <stdlib.h>
-//FOR DEBUGING!!!
-# include <stdio.h>
 # include <unistd.h>
 
 char	*get_next_line(int fd);

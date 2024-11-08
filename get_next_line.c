@@ -1,7 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kzarins <kzarins@student.42heilbronn.de>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 01:03:44 by kzarins           #+#    #+#             */
+/*   Updated: 2024/11/08 01:03:47 by kzarins          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-//Free the buffer and set buffer pointer to 0
 static char	*get_line(char **buffer, char *new_line_start);
+static char	*return_line(char **buffer, char **current_read, \
+		char **new_line_start, int last_line_f);
 static int	allocate_buffer(char **buffer);
 static int	truncate_buffer(char **buffer, char *new_line_start);
 
@@ -22,25 +35,24 @@ char	*get_next_line(int fd)
 	{
 		new_line_start = check_for_newline(buffer);
 		if (new_line_start)
-		{
-			free_buffer(&current_read, 0);
-			current_read = get_line(&buffer, new_line_start);
-			if (!current_read)
-				free_buffer(&buffer, 0);
-			return (current_read);
-		}
+			return (return_line(&buffer, &current_read, &new_line_start, 0));
 		bytes_read = read(fd, current_read, BUFFER_SIZE);
 		if (bytes_read == -1 || (bytes_read == 0 && *buffer == '\0') || \
 				!add_to_buffer(&buffer, current_read, bytes_read))
 			return (free_buffer(&buffer, &current_read));
 		if (!check_for_newline(buffer) && bytes_read < BUFFER_SIZE)
-		{
-			free_buffer(&current_read, 0);
-			current_read = get_line(&buffer, new_line_start);
-			free_buffer(&buffer, 0);
-			return (current_read);
-		}
+			return (return_line(&buffer, &current_read, &new_line_start, 1));
 	}
+}
+
+static char	*return_line(char **buffer, char **current_read, \
+		char **new_line_start, int last_line_f)
+{
+	free_buffer(current_read, 0);
+	*current_read = get_line(buffer, *new_line_start);
+	if (!*current_read || last_line_f)
+		free_buffer(buffer, 0);
+	return (*current_read);
 }
 
 static int	allocate_buffer(char **buffer)
@@ -52,9 +64,6 @@ static int	allocate_buffer(char **buffer)
 	return (1);
 }
 
-//Special case if there is no \n in the buffer
-//The buffer still has to be free!!
-//returns 0 if malloc failes
 static char	*get_line(char **buffer, char *new_line_start)
 {
 	char	*result;
