@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include "../libft/libft.h"
 
 static char	*get_line(char **buffer, char *new_line_start);
 static char	*return_line(char **buffer, char **current_read, \
@@ -82,7 +83,7 @@ static char	*get_line(char **buffer, char *new_line_start)
 		return (0);
 	}
 	ft_strlcpy(result, *buffer, \
-			new_line_start - *buffer);
+			new_line_start - *buffer - 1);
 	if (!truncate_buffer(buffer, new_line_start))
 	{
 		free(result);
